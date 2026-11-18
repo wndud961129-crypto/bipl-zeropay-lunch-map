@@ -231,7 +231,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
           </label>
         </div>
 
-        <button class="lunch-launch" id="lunchLaunch" type="button" aria-haspopup="dialog"><span>🎲 <b>점메추</b><small>12,000원 안에서 식사·카페 골라줘!</small></span><span aria-hidden="true">↗</span></button>
+        <button class="lunch-launch" id="lunchLaunch" type="button" aria-haspopup="dialog"><span>🎲 <b>점메추</b><small>식사 8,000원부터 · 합계 11,000~12,000원</small></span><span aria-hidden="true">↗</span></button>
         <div class="tiles" role="group" aria-label="카테고리">
           <button class="tab" data-cat="전체" aria-pressed="true"><span class="lbl">🗂️ 전체</span><span class="n num"></span><span class="arrow" aria-hidden="true">↗</span></button>
           <button class="tab" data-cat="음식점" aria-pressed="false"><span class="lbl">🍚 음식점</span><span class="n num"></span><span class="arrow" aria-hidden="true">↗</span></button>
@@ -295,10 +295,10 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 <dialog id="lunchDialog" class="lunch-dialog" aria-labelledby="lunchTitle">
   <div class="pick-head"><div><h2 id="lunchTitle">오늘 점심은 이거 어때요? 🎲</h2><p id="pickContext"></p></div><button id="pickClose" class="pick-close" type="button" aria-label="점메추 닫기">✕</button></div>
   <div id="pickResults" class="pick-results" aria-live="polite"></div>
-  <p class="pick-note">식사가 10,000원 이하면 음료를 더해 합계 12,000원 이내로 추천해요. 맞는 음료가 없거나 식사가 10,000원을 넘으면 식사만 추천해요. 가격·주문 조건과 지원 식권 사용 가능 여부는 매장에서 확인해 주세요.</p>
+  <p class="pick-note">식사는 8,000원 이상, 식사만 또는 음료 포함 합계는 11,000~12,000원이에요. 식사 10,000원 이하는 음료 조합을 계산하고, 10,000원 초과는 식사만 고려해요. 가능한 조합 중 12,000원에 가까운 순으로 추천해요. 가격·주문 조건과 지원 식권 사용 가능 여부는 매장에서 확인해 주세요.</p>
   <button id="pickAgain" class="pick-again" type="button">🎲 다시 추천</button>
 </dialog>
-<script src="lunch-picker.js?v=20261118-cafe1"></script>
+<script src="lunch-picker.js?v=20261118-budget2"></script>
 <script src="vendor/leaflet.js"></script>
 <script src="data.js"></script>
 <script src="filter.js"></script>
@@ -463,13 +463,13 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 
   var lunchDialog=document.getElementById('lunchDialog'),previousPicks=[];
   function pickLunch(){
-    var picks=LunchPicker.recommend(STORES,{budget:12000,payment:state.payment,previous:previousPicks});
+    var plan=LunchPicker.plan(STORES,{minMeal:8000,minTotal:11000,budget:12000,payment:state.payment,previous:previousPicks}),picks=plan.choices;
     previousPicks=picks.map(function(p){return p.key});
-    document.getElementById('pickContext').textContent=(state.payment==='ticket'?'비플페이':state.payment==='zeropay'?'제로페이':'전체 사용처')+' · 반경 600m 음식점 · 서로 다른 가게 추천';
+    document.getElementById('pickContext').textContent=(state.payment==='ticket'?'비플페이':state.payment==='zeropay'?'제로페이':'전체 사용처')+' · 가능한 추천 '+plan.candidateCount+'개 / 음식점 '+plan.restaurantCount+'곳 · 12,000원에 가까운 순';
     document.getElementById('pickResults').innerHTML=picks.length?picks.map(function(p,i){
       var cafe=p.cafe?'<div class="pick-cafe"><span class="cafe-label">☕ 함께 가면 좋은 카페</span><h4>'+esc(p.cafe.menu)+' <span class="num">'+p.cafe.price.toLocaleString('ko-KR')+'원</span></h4><p class="cafe-store">'+esc(p.cafe.store.name)+'</p><button class="pick-view" type="button" data-store="'+p.cafe.store.id+'">카페 보기 ↗</button><div class="pick-links"><a href="'+naverUrl(p.cafe.store)+'" target="_blank" rel="noopener">네이버지도</a><a href="'+kakaoUrl(p.cafe.store)+'" target="_blank" rel="noopener">카카오맵</a></div></div>':'';
       return '<article class="pick-card"><span>추천 '+(i+1)+' · '+(p.cafe?'식사 + 카페':'식사만')+'</span><h3>'+esc(p.menu)+'</h3><p class="pick-price num">'+p.price.toLocaleString('ko-KR')+'원</p><p class="pick-store">'+esc(p.store.name)+'</p><p class="pick-distance">'+p.store.dist+'m · 도보 약 '+walk(p.store.dist)+'분</p><button class="pick-view" type="button" data-store="'+p.store.id+'">가게 보기 ↗</button><div class="pick-links"><a href="'+naverUrl(p.store)+'" target="_blank" rel="noopener">네이버지도</a><a href="'+kakaoUrl(p.store)+'" target="_blank" rel="noopener">카카오맵</a></div>'+cafe+'<p class="pick-total">'+(p.cafe?'식사 + 음료 합계':'식사 금액')+' <b class="num">'+p.total.toLocaleString('ko-KR')+'원</b></p>'+(p.price<=10000&&!p.cafe?'<p class="cafe-unavailable">남은 예산에 맞는 음료가 없어 식사만 추천했어요.</p>':'')+'</article>';
-    }).join(''):'<p class="pick-empty">선택한 결제수단에 12,000원 이하로 가격이 확인된 음식점 메뉴가 없어요. 전체 사용처에서 다시 골라보세요.</p>';
+    }).join(''):'<p class="pick-empty">식사 8,000원 이상 · 합계 11,000~12,000원 조건에 맞는 추천이 없어요. 다른 결제수단을 선택해 보세요.</p>';
     document.getElementById('pickAgain').disabled=!picks.length;
   }
   document.getElementById('lunchLaunch').addEventListener('click',function(){previousPicks=[];pickLunch();lunchDialog.showModal();});
