@@ -70,55 +70,55 @@
   }
   function recommend(stores,options,random){return plan(stores,options,random).choices;}
 
+
   // ── 요기요 점메추 ─────────────────────────────────────────────
   // store.ymenu = 요기요 메뉴·최소주문·배달팁 구간, store.delivery = 배달/포장 가능 정보 (index.html 에서 붙임)
-  // 한 사람당 식사 1개(같은 메뉴 여러 개 가능)를 골라, 함께결제 인원 × 1인 예산 안에 들어오는 주문을 찾는다
-  var Y_MEAL_MIN=7000,Y_MEAL_MAX=16000,Y_TOP=12;
-  var Y_NOT_MEAL=/2인|3인|2~3인|한상|＋|\+|조각|1봉|사시미|요거트|스무디|에이드|아메리카노|아이스티|민트티|라떼|주스|셔벗|스프|감자튀김|호밀빵|타르트|탕수육|깐풍기|유린기|깐쇼|튀김|계란말이|순대$/;
+  // 비플페이 요기요 결제는 한 사람씩 따로 주문하므로, 1인 1주문 · 식사 메뉴 1개(단품)로만 고른다.
+  // 기준은 점메추와 같다: 식사 8,000원 이상, 결제 합계 11,000~12,000원(배달은 배달팁 포함),
+  // 가게 순서는 평점(요기요, 리뷰 수로 보정) + 대표메뉴 가산, 가게 안에서는 대표메뉴 → 12,000원에 가까운 금액 → 메뉴 리뷰 수.
+  var Y_MEAL_MIN=8000,Y_MEAL_MAX=16000;
+  var Y_NOT_MEAL=/세트|set|팩|박스|BOX|정식 세트|2인|3인|2~3인|한상|＋|\+|조각|1봉|\d+p\b|\d+P\b|사시미|요거트|스무디|에이드|아메리카노|아이스티|민트티|라떼|주스|셔벗|스프|감자튀김|호밀빵|타르트|탕수육|깐풍기|유린기|깐쇼|튀김|계란말이|순대$|닭강정/i;
   function yogiyoMeals(m){
     return (m.items||[]).filter(function(i){return i[1]>=Y_MEAL_MIN&&i[1]<=Y_MEAL_MAX&&!Y_NOT_MEAL.test(i[0]);})
-      .map(function(i){return {name:i[0],price:i[1],rep:!!i[2],reviews:i[3]||0};})
-      .sort(function(a,b){return (b.rep-a.rep)||(b.reviews-a.reviews)||(a.price-b.price);}).slice(0,Y_TOP);
+      .map(function(i){return {name:i[0],price:i[1],rep:!!i[2],reviews:i[3]||0};});
   }
   function deliveryFee(tiers,food){for(var i=0;i<tiers.length;i++){if(food>=tiers[i][0])return tiers[i][1];}return null;}
   function yogiyoRating(m){var v=m.reviews||0,C=4.7,w=30;return Number.isFinite(m.rating)&&m.rating>0?(v*m.rating+w*C)/(v+w):C;}
-  // 메뉴 n개 조합(중복 허용)을 모두 훑는다
-  function multisets(list,n,cb){var pick=[];(function go(start,left){if(!left){cb(pick.slice());return;}for(var i=start;i<list.length;i++){pick.push(list[i]);go(i,left-1);pick.pop();}})(0,n);}
-  function yogiyoOrder(store,options){
-    var m=store.ymenu,n=options.people||1,mode=options.mode||'delivery',budget=n*(options.perPerson||12000),floor=n*(options.minPerPerson||11000),best=null;
-    var meals=yogiyoMeals(m);
-    multisets(meals,n,function(pick){
-      var food=0,rep=0,reviews=0,names=Object.create(null);
-      pick.forEach(function(p){food+=p.price;rep+=p.rep?1:0;reviews+=p.reviews;names[p.name]=(names[p.name]||0)+1;});
+  // 한 가게에서 1인 단품 주문 후보를 모두 만든다 (배달은 최소주문금액 이상이어야 하고 배달팁을 더한다)
+  function yogiyoOrders(store,mode){
+    var m=store.ymenu,out=[];
+    yogiyoMeals(m).forEach(function(meal){
       var fee=0;
-      if(mode==='delivery'){if(food<m.min)return;fee=deliveryFee(m.tiers,food);if(fee==null)return;}
-      var total=food+fee;if(total>budget||total<floor)return;
-      var distinct=Object.keys(names).length;
-      var c={rep:rep,total:total,distinct:distinct,reviews:reviews};
-      if(!best||(c.rep-best.rep||c.total-best.total||c.distinct-best.distinct||c.reviews-best.reviews)>0){
-        best={rep:rep,total:total,distinct:distinct,reviews:reviews,food:food,fee:fee,
-          items:Object.keys(names).map(function(k){var p=pick.filter(function(x){return x.name===k;})[0];return {name:k,price:p.price,qty:names[k],rep:p.rep};})};
-      }
+      if(mode==='delivery'){if(meal.price<m.min)return;fee=deliveryFee(m.tiers,meal.price);if(fee==null)return;}
+      out.push({menu:meal.name,price:meal.price,rep:meal.rep,reviews:meal.reviews,fee:fee,total:meal.price+fee});
     });
-    return best;
+    return out;
   }
+  function betterOrder(a,b){return (b.rep-a.rep)||(b.total-a.total)||(b.reviews-a.reviews);}
   function planYogiyo(stores,options,random){
     options=options||{};random=random||Math.random;
-    var n=options.people||1,mode=options.mode||'delivery',payment=options.payment||'all',previous=options.previous||[],groups=[],eligible=0;
+    var mode=options.mode||'delivery',payment=options.payment||'all',previous=options.previous||[],
+        budget=options.budget||12000,floor=options.minTotal||11000,groups=[],over=[],eligible=0;
     stores.forEach(function(s){
       if(!s.ymenu||!s.delivery)return;
       if(mode==='pickup'&&!s.delivery.pickup)return;
       if(payment==='zeropay'&&!(s.payments||{}).zeropay)return;
       if(payment==='ticket'&&!(s.payments||{}).ticket)return;
       eligible++;
-      var o=yogiyoOrder(s,options);if(!o)return;
-      var rating=yogiyoRating(s.ymenu),score=rating+0.3*(o.rep/n);
-      groups.push({key:s.name+'|'+s.addr,store:s,order:o,rating:rating,score:score,tie:random()});
+      var orders=yogiyoOrders(s,mode),rating=yogiyoRating(s.ymenu);
+      var fit=orders.filter(function(o){return o.total>=floor&&o.total<=budget;}).sort(betterOrder);
+      if(fit.length){var o=fit[0];groups.push({key:s.name+'|'+s.addr,store:s,order:o,rating:rating,score:rating+(o.rep?0.3:0),tie:random()});return;}
+      // 예산 안에 드는 주문이 없는 가게: 대표메뉴 → 가장 싼(12,000원에 가장 가까운) 단품 주문을 따로 모아 둔다
+      var above=orders.filter(function(o){return o.total>budget;}).sort(function(a,b){return (b.rep-a.rep)||(a.total-b.total);})[0];
+      if(above)over.push({key:s.name+'|'+s.addr,store:s,order:above,rating:rating,score:rating+(above.rep?0.3:0),tie:random()});
     });
-    groups.sort(function(a,b){return (b.score-a.score)||(b.order.total-a.order.total)||(a.tie-b.tie);});
+    // 배달은 최소주문금액 때문에 12,000원 안에 드는 가게가 하나도 없으면, 12,000원을 넘는 주문으로 같은 순서(평점→대표메뉴→금액)로 추천한다
+    var overMode=!groups.length&&mode==='delivery'&&over.length>0;
+    if(overMode)groups=over;
+    groups.sort(function(a,b){return (b.score-a.score)||(overMode?(a.order.total-b.order.total):(b.order.total-a.order.total))||(a.tie-b.tie);});
     var fresh=groups.filter(function(g){return previous.indexOf(g.key)<0}),seen=groups.filter(function(g){return previous.indexOf(g.key)>=0});
-    var choices=fresh.concat(seen).slice(0,3).map(function(g){var o=g.order;return {key:g.key,store:g.store,items:o.items,food:o.food,fee:o.fee,total:o.total,perPerson:Math.ceil(o.total/n),people:n,mode:mode,rep:o.rep,rating:g.rating};});
-    return {choices:choices,storeCount:groups.length,eligibleCount:eligible};
+    function card(g){var o=g.order;return {key:g.key,store:g.store,menu:o.menu,price:o.price,rep:o.rep,fee:o.fee,total:o.total,over:Math.max(0,o.total-budget),mode:mode,rating:g.rating};}
+    return {choices:fresh.concat(seen).slice(0,3).map(card),overMode:overMode,storeCount:groups.length,eligibleCount:eligible};
   }
   return {recommend:recommend,getCandidates:getCandidates,plan:plan,routeLength:routeLength,storeRating:storeRating,planYogiyo:planYogiyo,deliveryFee:deliveryFee};
 });

@@ -95,6 +95,10 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 .seg-label{font-size:12px;color:var(--muted);padding:0 6px 0 8px}
 .seg button{border:0;background:transparent;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--ink-text)}.seg button:focus-visible{outline:3px solid var(--c-food);outline-offset:2px}
+.ygy-store{font-size:24px!important;line-height:1.2;margin:8px 0 4px!important;letter-spacing:-.03em}.ygy-rating{font-size:13px;margin:0}.ygy-rating b{font-size:15px}
+.ygy-menu{font-size:13px;margin:10px 0 0;padding:8px 10px;background:var(--surface);border-radius:12px;display:flex;justify-content:space-between;gap:8px}
+.ygy-over{color:#d6336c;font-weight:700}.ygy-over-note{color:#d6336c;font-size:12px}.ygy-rule{font-size:13px;margin:0 0 12px;padding:8px 12px;border-radius:12px;background:var(--panel)}
+.ymenu{margin-top:10px;font-size:12px}.ymenu summary{cursor:pointer;font-weight:700}.ymenu ul{list-style:none;margin:6px 0 0;padding:0;max-height:220px;overflow:auto}.ymenu li{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px dashed var(--line)}.ymenu p{color:var(--muted);margin:6px 0 0;font-size:11px}
 .ygy-items{list-style:none;margin:8px 0 0;padding:0;font-size:13px}.ygy-items li{display:flex;justify-content:space-between;gap:8px;padding:3px 0}.ygy-items .q{color:var(--muted)}
 .ygy-sum{font-size:12px;margin:10px 0 0;padding-top:8px;border-top:1px dashed var(--muted);display:grid;grid-template-columns:1fr auto;gap:2px 8px}.ygy-sum b{font-size:14px}
 .ygy-per{font-size:13px;margin:8px 0 0}.ygy-per b{font-size:18px}
@@ -133,6 +137,8 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 /* 목록 */
 .listhead{display:flex;align-items:baseline;justify-content:space-between;margin:28px 2px 14px}
 .count{font-size:13px;color:var(--muted)}
+.sort select{font:inherit;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 28px 6px 12px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+.sort select:focus-visible{outline:3px solid var(--c-food);outline-offset:2px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .list{display:flex;flex-direction:column;gap:14px;padding-bottom:8px}
 .card{border-radius:26px;padding:18px 18px 16px;cursor:pointer;border:2px solid transparent;transition:transform .15s ease,border-color .15s ease}
 .card:hover{transform:translateY(-2px)}
@@ -257,7 +263,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 
         <div class="launches">
           <button class="lunch-launch" id="lunchLaunch" type="button" aria-haspopup="dialog"><span>🎲 <b>점메추</b><small>식사 8,000원부터 · 합계 11,000~12,000원 · 카카오맵 인기 메뉴 우선</small></span><span aria-hidden="true">↗</span></button>
-          <button class="lunch-launch ygy-launch" id="ygyLaunch" type="button" aria-haspopup="dialog"><span>🛵 <b>요기요 점메추</b><small>배달·포장 · 함께결제 인원별 · 배달팁 포함 1인 12,000원</small></span><span aria-hidden="true">↗</span></button>
+          <button class="lunch-launch ygy-launch" id="ygyLaunch" type="button" aria-haspopup="dialog"><span>🛵 <b>요기요 점메추</b><small>배달·포장 · 1인 1주문 · 요기요 별점·대표메뉴 우선</small></span><span aria-hidden="true">↗</span></button>
         </div>
         <div class="tiles" role="group" aria-label="카테고리">
           <button class="tab" data-cat="전체" aria-pressed="true"><span class="lbl">🗂️ 전체</span><span class="n num"></span><span class="arrow" aria-hidden="true">↗</span></button>
@@ -282,7 +288,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
           <ol>
             <li><b>비플페이 앱</b> 하단 <b>더보기 → 요기요</b>로 들어가요. 매뉴얼은 식권 결제를 이 경로로 안내해요.</li>
             <li>배달 주소를 아카데미로 맞추고 가게·메뉴를 골라요. 포장은 오른쪽 위 <b>포장</b> 탭에서 주문해요.</li>
-            <li>결제 화면 <b>포인트 사용</b>에서 식권을 고르고 혼자결제 또는 함께결제를 선택한 뒤 금액을 넣어요.</li>
+            <li>결제 화면 <b>포인트 사용</b>에서 식권을 고르고 <b>혼자결제</b>로 금액을 넣어요. 비플페이 요기요 결제는 <b>한 사람씩 따로 주문</b>해야 해요.</li>
             <li>식권이 모자라면 남은 금액은 <b>비플머니</b>로 복합결제돼요(비플머니는 1만원 단위 자동 충전).</li>
             <li>주문 취소는 가게가 접수하기 전까지 앱에서, 접수 뒤에는 요기요 고객센터로만 가능해요.</li>
           </ol>
@@ -294,7 +300,10 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 
         <div class="listhead">
           <h2 class="sec">가게 목록<span class="dim num" id="countN"></span></h2>
-          <span class="count">가까운 순</span>
+          <label class="sort"><span class="sr-only">정렬</span><select id="sortSel" aria-label="가게 목록 정렬">
+            <option value="near" selected>가까운 순</option>
+            <option value="rec">추천순 (카카오)</option>
+          </select></label>
         </div>
         <div class="list" id="list" aria-live="polite" aria-atomic="false"></div>
 
@@ -343,7 +352,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
         <li><b>결제수단 탭</b>: 제로페이 공식 가맹점 / 비플페이(비플식권 목록 수록)로 걸러요.</li>
         <li><b>검색</b>창에 메뉴나 가게 이름을 넣어요. 카드의 메뉴 칩을 눌러도 그 메뉴로 검색돼요.</li>
         <li><b>대표메뉴 있는 곳만</b>, <b>🛵 요기요 배달 가능</b> 토글로 더 좁힐 수 있어요.</li>
-        <li>목록은 <b>가까운 순</b>이에요. 카드를 누르면 지도에서 위치를 보여 주고, 네이버지도·카카오맵 버튼으로 바로 열 수 있어요.</li>
+        <li>목록은 기본 <b>가까운 순</b>이고, 오른쪽 위에서 <b>추천순(카카오)</b>으로 바꾸면 카카오 평점(후기 수로 보정)과 카카오 추천 메뉴가 있는 가게부터 보여요. 카드를 누르면 지도에서 위치를 보여 주고, 네이버지도·카카오맵 버튼으로 바로 열 수 있어요.</li>
       </ul>
     </section>
     <section>
@@ -358,7 +367,8 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
       <h3>🛵 요기요 배달·포장</h3>
       <ul>
         <li>🛵 배지는 요기요에서 아카데미 주소로 배달되는 가게예요. 최소주문금액·배달팁·예상시간도 함께 보여요.</li>
-        <li><b>🛵 요기요 점메추</b>: 인원(1~4명)과 배달·포장을 고르면, 최소주문금액과 배달팁까지 포함해 1인 11,000~12,000원 안에 드는 주문을 짜 줘요. 혼자 배달은 대부분 최소주문에 걸려서 2명 이상 함께결제나 포장을 추천해요.</li>
+        <li><b>🛵 요기요 점메추</b>: 비플페이 요기요 결제는 <b>한 사람씩 따로 주문</b>해요. 배달·포장을 고르면 점메추와 같은 기준(식사 단품 8,000원 이상, 결제 11,000~12,000원)으로 <b>요기요 별점</b> 높은 가게부터 추천해요. 배달은 최소주문금액·배달팁 때문에 12,000원을 넘는 경우가 많아서, 그때는 넘는 금액이 적은 주문으로 보여 줘요.</li>
+        <li>가게 카드와 추천 카드의 <b>📋 요기요 메뉴 보기</b>를 펼치면 요기요 메뉴·가격을 바로 볼 수 있어요. 요기요 웹 링크는 배달 주소를 먼저 설정해야 가게가 열려요.</li>
         <li>식권 결제는 <b>비플페이 앱 › 더보기 › 요기요</b>에서 주문해요. 자세한 순서는 필터 아래 안내를 펼쳐 보세요.</li>
       </ul>
     </section>
@@ -376,17 +386,14 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 <dialog id="ygyDialog" class="lunch-dialog" aria-labelledby="ygyTitle">
   <div class="pick-head"><div><h2 id="ygyTitle">🛵 요기요 점메추</h2><p id="ygyContext"></p></div><button id="ygyClose" class="pick-close" type="button" aria-label="요기요 점메추 닫기">✕</button></div>
   <div class="ygy-controls">
-    <div class="seg" role="group" aria-label="함께 먹는 인원">
-      <span class="seg-label">인원</span>
-      <button type="button" data-people="1">1명</button><button type="button" data-people="2" aria-pressed="true">2명</button><button type="button" data-people="3">3명</button><button type="button" data-people="4">4명</button>
-    </div>
     <div class="seg" role="group" aria-label="주문 방식">
       <span class="seg-label">방식</span>
       <button type="button" data-mode="delivery" aria-pressed="true">🛵 배달</button><button type="button" data-mode="pickup">🥡 포장</button>
     </div>
   </div>
   <div id="ygyResults" class="pick-results" aria-live="polite"></div>
-  <p class="pick-note">1인 11,000~12,000원 × 인원 안에서, 한 사람당 식사 1개로 주문을 짜요. 배달은 <b>최소주문금액</b>을 넘기고 <b>배달팁까지 포함</b>해 계산해요. 요기요 별점과 요기요 '대표메뉴'를 우선해요. 주문·결제는 <b>비플페이 앱 › 더보기 › 요기요</b>에서 하고, 여럿이면 <b>함께결제</b>로 나눠 내요. 메뉴·가격·배달팁은 2026-11-18 요기요 기준이라 앱에서 다시 확인해 주세요. 포장 최소주문금액은 가게마다 다를 수 있어요.</p>
+  <p class="ygy-rule">👤 비플페이로 요기요 결제는 <b>한 사람씩 따로 주문</b>해요. 그래서 1인 1주문, 식사 메뉴 1개(단품)로만 추천해요.</p>
+  <p class="pick-note">점메추와 같은 기준이에요: 식사 8,000원 이상, 결제 합계 <b>11,000~12,000원</b>(배달은 <b>배달팁 포함</b>, <b>최소주문금액</b> 이상). 가게는 <b>요기요 별점</b>(리뷰가 적으면 보정)과 요기요 <b>대표메뉴</b>(🔥) 순으로 골라요. 세트·사이드·음료·2인 메뉴는 빼요. 주문·결제는 <b>비플페이 앱 › 더보기 › 요기요</b>에서 해요. 메뉴·가격·배달팁은 2026-11-18 요기요 기준(전 메뉴 재확인 완료)이라 주문 전에 앱에서 다시 확인해 주세요. 포장 최소주문금액은 가게마다 다를 수 있어요.</p>
   <button id="ygyAgain" class="pick-again" type="button">🎲 다시 추천</button>
 </dialog>
 <dialog id="lunchDialog" class="lunch-dialog" aria-labelledby="lunchTitle">
@@ -395,7 +402,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   <p class="pick-note">식사는 8,000원 이상, 식사만 또는 음료 포함 합계는 11,000~12,000원이에요. 식사 10,000원 이하는 음료 조합을 계산하고, 10,000원 초과는 식사만 고려해요. 예산 안의 조합 중 카카오맵 평점(후기가 적으면 평균 쪽으로 보정)과 카카오가 추천 메뉴로 표시한 메뉴를 우선해 추천하고, 그다음 12,000원에 가까운 금액, 아카데미에서 식당·카페를 거쳐 돌아오는 짧은 왕복 동선(직선거리 기준) 순으로 골라요. 평점·추천 메뉴는 2026-11-18 카카오맵 기준이에요. 가격·주문 조건과 지원 식권 사용 가능 여부는 매장에서 확인해 주세요.</p>
   <button id="pickAgain" class="pick-again" type="button">🎲 다시 추천</button>
 </dialog>
-<script src="lunch-picker.js?v=20261118-ypick1"></script>
+<script src="lunch-picker.js?v=20261118-ypick2"></script>
 <script src="popularity.js?v=20261118-pop1"></script>
 <script src="delivery.js?v=20261118-dlv1"></script>
 <script src="yogiyo-menus.js?v=20261118-ypick1"></script>
@@ -496,7 +503,8 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   })();
 
   // 상태
-  var state = {cat:"전체", q:"", onlyMenu:false, payment:"all", delivery:false};
+  var state = {cat:"전체", q:"", onlyMenu:false, payment:"all", delivery:false, sort:"near"};
+  function recScore(s){ return LunchPicker.storeRating(s) + ((s.pop && s.pop.menus && s.pop.menus.length) ? 0.3 : 0); }
   var paymentTabs=Array.prototype.slice.call(document.querySelectorAll(".payment-tab"));
   var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
   var listEl = document.getElementById("list"), countEl = document.getElementById("countN"), qEl = document.getElementById("q");
@@ -513,6 +521,12 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
       t.querySelector(".n").textContent = n;
     });
     var shown = STORES.filter(function(s){return matches(s)});
+    // 추천순: 점메추와 같은 카카오 점수(후기 수로 보정한 평점 + 카카오 추천 메뉴 가산). 카카오 정보가 없는 가게는 뒤로, 같으면 가까운 순
+    if(state.sort === "rec") shown = shown.slice().sort(function(a,b){
+      var ha=!!(a.pop&&Number.isFinite(a.pop.rating)), hb=!!(b.pop&&Number.isFinite(b.pop.rating));
+      if(ha!==hb) return ha?-1:1;
+      return (recScore(b)-recScore(a)) || (a.dist-b.dist);
+    });
     countEl.textContent = "(" + shown.length + ")";
     visible = {}; shown.forEach(function(s){ visible[s.id] = true; }); syncMarkers();
     if(!shown.length){ listEl.innerHTML = '<p class="empty">조건에 맞는 가게가 없어요 🥲</p>'; return; }
@@ -523,7 +537,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
       if(s.approx) badges += '<span class="badge warn">위치 근사</span>';
       if(s.pop && Number.isFinite(s.pop.rating)) badges += '<span class="badge">⭐ '+s.pop.rating.toFixed(1)+(Number.isFinite(s.pop.reviews)?' · 후기 '+s.pop.reviews:'')+'</span>';
       if(s.delivery) badges += '<span class="badge dlv">🛵 요기요 배달</span>' + (s.delivery.pickup ? '<span class="badge">🥡 포장</span>' : '');
-      var dlv = s.delivery ? '<div class="dlv-info">🛵 최소주문 <b>'+won(s.delivery.min)+'</b> · 배달팁 '+won(s.delivery.fee)+'~ · '+esc(s.delivery.eta)+(s.delivery.pickup?' · 포장 가능'+(s.delivery.pickupMin?'(약 '+s.delivery.pickupMin+'분)':''):'')+'<br><small>식권 결제는 비플페이 앱 › 더보기 › 요기요에서 · <a href="https://www.yogiyo.co.kr/mobile/#/'+s.delivery.id+'/" target="_blank" rel="noopener">요기요에서 메뉴 보기 ↗</a></small></div>' : '';
+      var dlv = s.delivery ? '<div class="dlv-info">🛵 최소주문 <b>'+won(s.delivery.min)+'</b> · 배달팁 '+won(s.delivery.fee)+'~ · '+esc(s.delivery.eta)+(s.delivery.pickup?' · 포장 가능'+(s.delivery.pickupMin?'(약 '+s.delivery.pickupMin+'분)':''):'')+'<br><small>식권 결제는 비플페이 앱 › 더보기 › 요기요에서 1인씩 주문'+(s.ymenu?' · '+ygyLink(s):'')+'</small>'+(s.ymenu?ygyMenuList(s):'')+'</div>' : '';
       var menu = "";
       if(s.cat !== "편의점·마트"){
         if(s.menu && s.menu.length){
@@ -559,10 +573,11 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   document.getElementById("clear").addEventListener("click", function(e){ e.preventDefault(); qEl.value = ""; state.q = ""; render(); });
   document.getElementById("onlyMenu").addEventListener("change", function(e){ state.onlyMenu = e.target.checked; render(); });
   document.getElementById("onlyDelivery").addEventListener("change", function(e){ state.delivery = e.target.checked; render(); });
+  document.getElementById("sortSel").addEventListener("change", function(e){ state.sort = e.target.value; render(); });
   paymentTabs.forEach(function(t){ t.addEventListener("click",function(){state.payment=t.dataset.payment;render();}); });
   listEl.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.matches(".card")){e.preventDefault();e.target.click();}});
   listEl.addEventListener("click", function(e){
-    if(e.target.closest("a")) return;
+    if(e.target.closest("a") || e.target.closest("details")) return;
     var chip = e.target.closest(".mchip");
     if(chip){ qEl.value = chip.dataset.m; state.q = chip.dataset.m; state.cat = "전체"; render(); window.scrollTo({top:document.querySelector(".hello").getBoundingClientRect().top + window.scrollY - 10, behavior:"smooth"}); return; }
     var card = e.target.closest(".card");
@@ -589,32 +604,37 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   }
   document.getElementById('lunchLaunch').addEventListener('click',function(){previousPicks=[];pickLunch();lunchDialog.showModal();});
   document.getElementById('pickClose').addEventListener('click',function(){lunchDialog.close();});
-  // 요기요 점메추
-  var ygyDialog=document.getElementById('ygyDialog'),ygy={people:2,mode:'delivery',previous:[]};
+  // 요기요 점메추 (비플페이 요기요 결제는 한 사람씩 따로 주문 → 1인 1주문 · 식사 단품)
+  var ygyDialog=document.getElementById('ygyDialog'),ygy={mode:'delivery',previous:[]};
+  function ygyMenuList(s){
+    var m=s.ymenu;if(!m||!m.items||!m.items.length)return '';
+    return '<details class="ymenu"><summary>📋 요기요 메뉴 '+m.items.length+'개 보기</summary><ul>'
+      +m.items.map(function(i){return '<li><span>'+(i[2]?'🔥 ':'')+esc(i[0])+'</span><span class="num">'+won(i[1])+'</span></li>'}).join('')
+      +'</ul><p>최소주문 '+won(m.min)+' · 배달팁 '+m.tiers.slice().reverse().map(function(t){return won(t[0])+'↑ '+won(t[1])}).join(' / ')+' · 2026-11-18 요기요 기준</p></details>';
+  }
+  function ygyLink(s){return '<a href="https://www.yogiyo.co.kr/mobile/#/'+s.ymenu.id+'/" target="_blank" rel="noopener" title="요기요 웹은 배달 주소를 먼저 설정해야 가게 메뉴가 열려요">요기요 웹에서 열기 ↗</a>';}
   function ygyPick(){
-    Array.prototype.forEach.call(ygyDialog.querySelectorAll('[data-people]'),function(b){b.setAttribute('aria-pressed',String(+b.dataset.people===ygy.people));});
     Array.prototype.forEach.call(ygyDialog.querySelectorAll('[data-mode]'),function(b){b.setAttribute('aria-pressed',String(b.dataset.mode===ygy.mode));});
-    var r=LunchPicker.planYogiyo(STORES,{people:ygy.people,mode:ygy.mode,payment:state.payment,perPerson:12000,minPerPerson:11000,previous:ygy.previous}),picks=r.choices;
+    var r=LunchPicker.planYogiyo(STORES,{mode:ygy.mode,payment:state.payment,budget:12000,minTotal:11000,previous:ygy.previous}),picks=r.choices;
     ygy.previous=ygy.previous.concat(picks.map(function(p){return p.key}).filter(function(k){return ygy.previous.indexOf(k)<0}));
     if(ygy.previous.length>=r.storeCount)ygy.previous=[];
-    var payLabel=state.payment==='ticket'?'비플페이':state.payment==='zeropay'?'제로페이':'전체 사용처';
-    document.getElementById('ygyContext').textContent=payLabel+' · '+ygy.people+'명 '+(ygy.mode==='delivery'?'배달':'포장')+' · 예산 '+won(ygy.people*12000)+' · 조건에 맞는 가게 '+r.storeCount+'곳 / '+(ygy.mode==='delivery'?'배달':'포장')+' 가능 '+r.eligibleCount+'곳';
-    var empty=ygy.mode==='delivery'&&ygy.people===1
-      ? '혼자서는 최소주문금액과 배달팁 때문에 12,000원 안에 배달되는 가게가 없어요. <b>2명 이상 함께결제</b>로 시키거나 <b>🥡 포장</b>을 골라 보세요.'
-      : '이 조건에 맞는 주문이 없어요. 인원이나 방식, 결제수단을 바꿔 보세요.';
+    var payLabel=state.payment==='ticket'?'비플페이':state.payment==='zeropay'?'제로페이':'전체 사용처',modeLabel=ygy.mode==='delivery'?'배달':'포장';
+    document.getElementById('ygyContext').innerHTML=esc(payLabel+' · 1인 '+modeLabel+' · 추천 가능한 가게 '+r.storeCount+'곳 / '+modeLabel+' 가능 '+r.eligibleCount+'곳')
+      +(r.overMode?'<br><b class="ygy-over-note">배달은 모든 가게가 최소주문금액·배달팁 때문에 12,000원을 넘어요. 넘는 금액이 적은 주문으로 추천하고, 초과분은 비플머니로 결제돼요.</b>':'');
     document.getElementById('ygyResults').innerHTML=picks.length?picks.map(function(p,i){
       var d=p.store.delivery||{},walkM=2*p.store.dist;
-      var items=p.items.map(function(it){return '<li><span>'+(it.rep?'🔥 ':'')+esc(it.name)+' <span class="q">×'+it.qty+'</span></span><span class="num">'+won(it.price*it.qty)+'</span></li>'}).join('');
       var when=p.mode==='delivery'?'🛵 예상 '+esc(d.eta||'-'):'🥡 준비 약 '+(d.pickupMin||'?')+'분 · 왕복 도보 약 '+walk(walkM)+'분';
-      return '<article class="pick-card"><span>추천 '+(i+1)+' · '+(p.mode==='delivery'?'배달':'포장')+' · ⭐ 요기요 '+(p.store.ymenu.rating||'-')+' ('+(p.store.ymenu.reviews||0)+')</span>'
-        +'<h3>'+esc(p.store.name)+'</h3><p class="pick-distance">'+when+'</p>'
-        +'<ul class="ygy-items">'+items+'</ul>'
-        +'<div class="ygy-sum"><span>메뉴 합계</span><span class="num">'+won(p.food)+'</span>'+(p.mode==='delivery'?'<span>배달팁</span><span class="num">'+won(p.fee)+'</span><span>최소주문</span><span class="num">'+won(p.store.ymenu.min)+'</span>':'')+'<b>총 결제</b><b class="num">'+won(p.total)+'</b></div>'
-        +'<p class="ygy-per">'+(p.people>1?'함께결제 1인당 ':'1인 ')+'<b class="num">'+won(p.perPerson)+'</b></p>'
-        +'<button class="pick-view" type="button" data-store="'+p.store.id+'">가게 보기 ↗</button>'
-        +'<div class="pick-links"><a href="https://www.yogiyo.co.kr/mobile/#/'+p.store.ymenu.id+'/" target="_blank" rel="noopener">요기요에서 메뉴 보기</a><a href="'+kakaoUrl(p.store)+'" target="_blank" rel="noopener">카카오맵</a></div>'
+      return '<article class="pick-card ygy-card"><span>추천 '+(i+1)+' · '+(p.mode==='delivery'?'배달':'포장')+'</span>'
+        +'<h3 class="ygy-store">'+esc(p.store.name)+'</h3>'
+        +'<p class="ygy-rating">⭐ 요기요 <b>'+(p.store.ymenu.rating||'-')+'</b> · 리뷰 '+(p.store.ymenu.reviews||0).toLocaleString('ko-KR')+'개 · '+p.store.dist+'m</p>'
+        +'<p class="pick-distance">'+when+'</p>'
+        +'<p class="ygy-menu">'+(p.rep?'🔥 ':'')+esc(p.menu)+' <span class="num">'+won(p.price)+'</span></p>'
+        +'<div class="ygy-sum">'+(p.mode==='delivery'?'<span>배달팁</span><span class="num">'+won(p.fee)+'</span><span>최소주문</span><span class="num">'+won(p.store.ymenu.min)+'</span>':'')+'<b>결제 금액</b><b class="num">'+won(p.total)+'</b>'+(p.over?'<span class="ygy-over">식권 12,000원 초과</span><span class="num ygy-over">+'+won(p.over)+'</span>':'')+'</div>'
+        +ygyMenuList(p.store)
+        +'<button class="pick-view" type="button" data-store="'+p.store.id+'">지도에서 가게 보기 ↗</button>'
+        +'<div class="pick-links">'+ygyLink(p.store)+'<a href="'+kakaoUrl(p.store)+'" target="_blank" rel="noopener">카카오맵</a></div>'
         +'</article>';
-    }).join(''):'<p class="pick-empty">'+empty+'</p>';
+    }).join(''):'<p class="pick-empty">이 조건에 맞는 주문이 없어요. 방식이나 결제수단을 바꿔 보세요.</p>';
     document.getElementById('ygyAgain').disabled=!picks.length;
   }
   document.getElementById('ygyLaunch').addEventListener('click',function(){ygy.previous=[];ygyPick();ygyDialog.showModal();});
@@ -622,8 +642,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   document.getElementById('ygyAgain').addEventListener('click',ygyPick);
   ygyDialog.addEventListener('click',function(e){
     if(e.target===ygyDialog){ygyDialog.close();return;}
-    var pb=e.target.closest('[data-people]'),mb=e.target.closest('[data-mode]'),vb=e.target.closest('.pick-view');
-    if(pb){ygy.people=+pb.dataset.people;ygy.previous=[];ygyPick();return;}
+    var mb=e.target.closest('[data-mode]'),vb=e.target.closest('.pick-view');
     if(mb){ygy.mode=mb.dataset.mode;ygy.previous=[];ygyPick();return;}
     if(vb){var s=STORES[+vb.dataset.store];ygyDialog.close();state.cat=s.cat;state.q=s.name;qEl.value=s.name;render();highlight(s.id,true);var card=listEl.querySelector('.card[data-id="'+s.id+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'center'});}
   });
