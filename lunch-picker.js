@@ -69,5 +69,56 @@
     return {choices:choices,candidateCount:candidates.length,restaurantCount:groups.length};
   }
   function recommend(stores,options,random){return plan(stores,options,random).choices;}
-  return {recommend:recommend,getCandidates:getCandidates,plan:plan,routeLength:routeLength,storeRating:storeRating};
+
+  // ── 요기요 점메추 ─────────────────────────────────────────────
+  // store.ymenu = 요기요 메뉴·최소주문·배달팁 구간, store.delivery = 배달/포장 가능 정보 (index.html 에서 붙임)
+  // 한 사람당 식사 1개(같은 메뉴 여러 개 가능)를 골라, 함께결제 인원 × 1인 예산 안에 들어오는 주문을 찾는다
+  var Y_MEAL_MIN=7000,Y_MEAL_MAX=16000,Y_TOP=12;
+  var Y_NOT_MEAL=/2인|3인|2~3인|한상|＋|\+|조각|1봉|사시미|요거트|스무디|에이드|아메리카노|아이스티|민트티|라떼|주스|셔벗|스프|감자튀김|호밀빵|타르트|탕수육|깐풍기|유린기|깐쇼|튀김|계란말이|순대$/;
+  function yogiyoMeals(m){
+    return (m.items||[]).filter(function(i){return i[1]>=Y_MEAL_MIN&&i[1]<=Y_MEAL_MAX&&!Y_NOT_MEAL.test(i[0]);})
+      .map(function(i){return {name:i[0],price:i[1],rep:!!i[2],reviews:i[3]||0};})
+      .sort(function(a,b){return (b.rep-a.rep)||(b.reviews-a.reviews)||(a.price-b.price);}).slice(0,Y_TOP);
+  }
+  function deliveryFee(tiers,food){for(var i=0;i<tiers.length;i++){if(food>=tiers[i][0])return tiers[i][1];}return null;}
+  function yogiyoRating(m){var v=m.reviews||0,C=4.7,w=30;return Number.isFinite(m.rating)&&m.rating>0?(v*m.rating+w*C)/(v+w):C;}
+  // 메뉴 n개 조합(중복 허용)을 모두 훑는다
+  function multisets(list,n,cb){var pick=[];(function go(start,left){if(!left){cb(pick.slice());return;}for(var i=start;i<list.length;i++){pick.push(list[i]);go(i,left-1);pick.pop();}})(0,n);}
+  function yogiyoOrder(store,options){
+    var m=store.ymenu,n=options.people||1,mode=options.mode||'delivery',budget=n*(options.perPerson||12000),floor=n*(options.minPerPerson||11000),best=null;
+    var meals=yogiyoMeals(m);
+    multisets(meals,n,function(pick){
+      var food=0,rep=0,reviews=0,names=Object.create(null);
+      pick.forEach(function(p){food+=p.price;rep+=p.rep?1:0;reviews+=p.reviews;names[p.name]=(names[p.name]||0)+1;});
+      var fee=0;
+      if(mode==='delivery'){if(food<m.min)return;fee=deliveryFee(m.tiers,food);if(fee==null)return;}
+      var total=food+fee;if(total>budget||total<floor)return;
+      var distinct=Object.keys(names).length;
+      var c={rep:rep,total:total,distinct:distinct,reviews:reviews};
+      if(!best||(c.rep-best.rep||c.total-best.total||c.distinct-best.distinct||c.reviews-best.reviews)>0){
+        best={rep:rep,total:total,distinct:distinct,reviews:reviews,food:food,fee:fee,
+          items:Object.keys(names).map(function(k){var p=pick.filter(function(x){return x.name===k;})[0];return {name:k,price:p.price,qty:names[k],rep:p.rep};})};
+      }
+    });
+    return best;
+  }
+  function planYogiyo(stores,options,random){
+    options=options||{};random=random||Math.random;
+    var n=options.people||1,mode=options.mode||'delivery',payment=options.payment||'all',previous=options.previous||[],groups=[],eligible=0;
+    stores.forEach(function(s){
+      if(!s.ymenu||!s.delivery)return;
+      if(mode==='pickup'&&!s.delivery.pickup)return;
+      if(payment==='zeropay'&&!(s.payments||{}).zeropay)return;
+      if(payment==='ticket'&&!(s.payments||{}).ticket)return;
+      eligible++;
+      var o=yogiyoOrder(s,options);if(!o)return;
+      var rating=yogiyoRating(s.ymenu),score=rating+0.3*(o.rep/n);
+      groups.push({key:s.name+'|'+s.addr,store:s,order:o,rating:rating,score:score,tie:random()});
+    });
+    groups.sort(function(a,b){return (b.score-a.score)||(b.order.total-a.order.total)||(a.tie-b.tie);});
+    var fresh=groups.filter(function(g){return previous.indexOf(g.key)<0}),seen=groups.filter(function(g){return previous.indexOf(g.key)>=0});
+    var choices=fresh.concat(seen).slice(0,3).map(function(g){var o=g.order;return {key:g.key,store:g.store,items:o.items,food:o.food,fee:o.fee,total:o.total,perPerson:Math.ceil(o.total/n),people:n,mode:mode,rep:o.rep,rating:g.rating};});
+    return {choices:choices,storeCount:groups.length,eligibleCount:eligible};
+  }
+  return {recommend:recommend,getCandidates:getCandidates,plan:plan,routeLength:routeLength,storeRating:storeRating,planYogiyo:planYogiyo,deliveryFee:deliveryFee};
 });
