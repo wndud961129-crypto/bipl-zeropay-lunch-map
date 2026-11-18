@@ -195,6 +195,13 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 .evidence a{text-underline-offset:3px}.leaflet-container{font:inherit;z-index:1}.leaflet-popup-content{font-size:13px;line-height:1.5}
 .leaflet-control-attribution{font-size:9px!important}.home-marker{border:0;background:transparent}
 @media(max-width:640px){.brand{font-size:16px}.payment-tab{font-size:13px;padding:10px 6px}}
+
+.lunch-launch{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;border:1px solid var(--line);border-radius:20px;background:var(--p-cafe);padding:14px 18px;margin-top:20px;cursor:pointer;font-size:18px}.lunch-launch small{display:block;font-size:13px;margin-top:3px;color:var(--text)}
+.lunch-launch:focus-visible,.pick-again:focus-visible,.pick-close:focus-visible{outline:3px solid var(--c-food);outline-offset:3px}
+.lunch-dialog{background:var(--frame);color:var(--text);border:1px solid var(--line);border-radius:28px;padding:24px;max-width:760px;width:calc(100% - 32px);max-height:88dvh;overflow:auto;box-shadow:var(--shadow)}.lunch-dialog::backdrop{background:rgba(12,24,20,.55)}
+.pick-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.pick-head h2{font-size:24px;margin:0;letter-spacing:-.03em}.pick-head p{color:var(--muted);font-size:13px;margin:7px 0 18px}.pick-close{background:var(--field);border:0;border-radius:50%;width:34px;height:34px;flex-shrink:0;cursor:pointer}
+.pick-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.pick-card{background:var(--p-food);padding:18px;border-radius:20px;display:flex;flex-direction:column;min-width:0}.pick-card:nth-child(2){background:var(--p-cafe)}.pick-card:nth-child(3){background:var(--p-all)}.pick-card h3{font-size:18px;margin:10px 0 5px;overflow-wrap:anywhere}.pick-price{font-size:22px;font-weight:700;margin:0 0 12px}.pick-store{font-size:13px;margin:0}.pick-distance{color:var(--muted);font-size:12px;margin:5px 0 14px}.pick-view{margin-top:auto;border:0;border-radius:999px;background:var(--surface);padding:10px;cursor:pointer;font-weight:600}.pick-links{display:flex;gap:12px;font-size:12px;margin:10px 0 0}.pick-note{color:var(--muted);font-size:12px;margin:16px 0}.pick-again{width:100%;padding:13px;border:0;border-radius:999px;background:var(--ink);color:var(--ink-text);font-weight:700;cursor:pointer}.pick-empty{grid-column:1/-1;color:var(--muted);padding:25px 0}
+@media(max-width:600px){.pick-results{grid-template-columns:1fr}.pick-head h2{font-size:21px}.lunch-dialog{padding:20px}.pick-card{padding:16px}.pick-card h3{margin-top:4px}.pick-price{margin-bottom:8px}.pick-distance{margin-bottom:10px}}
 </style>
 </head>
 <body>
@@ -224,6 +231,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
           </label>
         </div>
 
+        <button class="lunch-launch" id="lunchLaunch" type="button" aria-haspopup="dialog"><span>🎲 <b>점메추</b><small>12,000원 이하, 오늘 점심 골라줘!</small></span><span aria-hidden="true">↗</span></button>
         <div class="tiles" role="group" aria-label="카테고리">
           <button class="tab" data-cat="전체" aria-pressed="true"><span class="lbl">🗂️ 전체</span><span class="n num"></span><span class="arrow" aria-hidden="true">↗</span></button>
           <button class="tab" data-cat="음식점" aria-pressed="false"><span class="lbl">🍚 음식점</span><span class="n num"></span><span class="arrow" aria-hidden="true">↗</span></button>
@@ -234,7 +242,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
         <div class="payment-tabs" role="group" aria-label="결제수단">
           <button class="payment-tab" data-payment="all" aria-pressed="true" type="button">전체 사용처</button>
           <button class="payment-tab" data-payment="zeropay" aria-pressed="false" type="button">제로페이</button>
-          <button class="payment-tab" data-payment="ticket" aria-pressed="false" type="button">식권 원본목록</button>
+          <button class="payment-tab" data-payment="ticket" aria-pressed="false" type="button">비플페이</button>
         </div>
         <p class="payment-note" id="paymentNote">제로페이 가맹점과 비플식권 사용처는 서로 다를 수 있어요.</p>
         <p class="payment-note" id="supportNotice">지원 식권의 실제 사용 여부는 운영기관의 업종·매장·시간 설정에 따라 달라요. 이 지도의 지원금 사용 조건은 아직 미확인입니다.</p>
@@ -257,7 +265,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
             <li>거리는 아카데미에서 가게까지의 <b>직선거리</b>예요. 실제 걷는 길은 더 길 수 있어요. 도보 시간은 분속 67m(시속 약 4km)로 계산했어요.</li>
             <li><b>위치 근사</b> 표시가 있는 가게는 지도에 건물 번호가 없어서 도로 위치로 추정했어요(약 ±150m).</li>
             <li>기존 비플페이 앱 목록 54곳에 <a href="https://www.zeropay.or.kr/UI_HP_009_03.act" target="_blank" rel="noopener">공식 제로페이 가맹점 검색</a>에서 확인한 매장을 더했어요. 제로페이 확인일 <span id="checked"></span>. 모든 가맹점을 빠짐없이 보장하는 목록은 아니에요.</li>
-            <li>제로페이 표시는 공식 목록의 상호·도로명주소를 대조했다는 뜻이에요. '주소 보완 필요' 5곳은 공식 자료에 건물번호가 없어요. 비플식권 원본목록은 과거 수록 근거이며, 실제 지원금 승인 여부를 뜻하지 않아요. <a href="https://mealzeropay.gitbook.io/guide/admin/2./3.-1" target="_blank" rel="noopener">운영기관의 업종·매장 설정</a>을 확인해 주세요.</li>
+            <li>제로페이 표시는 공식 목록의 상호·도로명주소를 대조했다는 뜻이에요. '주소 보완 필요' 5곳은 공식 자료에 건물번호가 없어요. 비플페이 표시는 원본의 비플식권 목록 수록 근거이며, 실제 지원금 승인 여부를 뜻하지 않아요. <a href="https://mealzeropay.gitbook.io/guide/admin/2./3.-1" target="_blank" rel="noopener">운영기관의 업종·매장 설정</a>을 확인해 주세요.</li>
             <li>대표메뉴와 가격은 네이버 지도의 매장 메뉴 페이지를 기준으로 정리했어요(2026-11-18). 네이버에 쓸 만한 메뉴가 없는 2곳만 다른 출처를 썼어요. 가격은 가게 사정에 따라 바뀔 수 있어요.</li>
             <li>원본 목록에서 술집·유흥주점·저녁 장사 포장마차처럼 점심 식사와 맞지 않는 10곳, 저녁에만 여는 고깃집 2곳, 지도 앱에서 확인되지 않는 1곳은 뺐어요. 이마트 상무점은 위치를 확인하지 못해 뺐어요.</li>
             <li>원본 앱을 복사한 별도 버전입니다. 지도 © OpenStreetMap contributors · 카카오맵을 설정한 경우 © Kakao.</li>
@@ -284,6 +292,13 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   // 카카오맵 JavaScript 키 (페이지에 공개되는 키. 카카오 디벨로퍼스에 등록한 도메인에서만 동작)
   window.KAKAO_JS_KEY = "여기에_내_JavaScript_키";
 </script>
+<dialog id="lunchDialog" class="lunch-dialog" aria-labelledby="lunchTitle">
+  <div class="pick-head"><div><h2 id="lunchTitle">오늘 점심은 이거 어때요? 🎲</h2><p id="pickContext"></p></div><button id="pickClose" class="pick-close" type="button" aria-label="점메추 닫기">✕</button></div>
+  <div id="pickResults" class="pick-results" aria-live="polite"></div>
+  <p class="pick-note">등록된 가격 기준 12,000원 이하 메뉴예요. 가격·주문 조건과 지원 식권 사용 가능 여부는 매장에서 확인해 주세요.</p>
+  <button id="pickAgain" class="pick-again" type="button">🎲 다시 추천</button>
+</dialog>
+<script src="lunch-picker.js"></script>
 <script src="vendor/leaflet.js"></script>
 <script src="data.js"></script>
 <script src="filter.js"></script>
@@ -399,7 +414,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
     if(!shown.length){ listEl.innerHTML = '<p class="empty">조건에 맞는 가게가 없어요 🥲</p>'; return; }
     listEl.innerHTML = shown.map(function(s){
       var k = KIND[s.cat];
-      var badges = s.src.map(function(x){return '<span class="badge '+(x==='제로페이'?'zero':'')+'">'+esc(x==='전체 가맹점'?'비플페이 앱 수록':x==='비플식권'?'비플식권 원본목록':x)+'</span>'}).join("");
+      var badges = s.src.map(function(x){return '<span class="badge '+(x==='제로페이'?'zero':'')+'">'+esc(x==='전체 가맹점'?'비플페이 앱 수록':x==='비플식권'?'비플페이':x)+'</span>'}).join("");
       if(s.paymentAudit && s.paymentAudit.status==='official_name_road_match') badges += '<span class="badge warn">제로페이 주소 보완 필요</span>';
       if(s.approx) badges += '<span class="badge warn">위치 근사</span>';
       var menu = "";
@@ -444,6 +459,20 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
     var card = e.target.closest(".card");
     if(card){ highlight(+card.dataset.id, true); if(window.innerWidth < 960) document.getElementById("map").scrollIntoView({behavior:"smooth"}); }
   });
+
+
+  var lunchDialog=document.getElementById('lunchDialog'),previousPicks=[];
+  function pickLunch(){
+    var picks=LunchPicker.recommend(STORES,{budget:12000,payment:state.payment,previous:previousPicks});
+    previousPicks=picks.map(function(p){return p.key});
+    document.getElementById('pickContext').textContent=(state.payment==='ticket'?'비플페이':state.payment==='zeropay'?'제로페이':'전체 사용처')+' · 반경 600m 음식점 · 서로 다른 가게 추천';
+    document.getElementById('pickResults').innerHTML=picks.length?picks.map(function(p,i){return '<article class="pick-card"><span>추천 '+(i+1)+'</span><h3>'+esc(p.menu)+'</h3><p class="pick-price num">'+p.price.toLocaleString('ko-KR')+'원</p><p class="pick-store">'+esc(p.store.name)+'</p><p class="pick-distance">'+p.store.dist+'m · 도보 약 '+walk(p.store.dist)+'분</p><button class="pick-view" type="button" data-store="'+p.store.id+'">가게 보기 ↗</button><div class="pick-links"><a href="'+naverUrl(p.store)+'" target="_blank" rel="noopener">네이버지도</a><a href="'+kakaoUrl(p.store)+'" target="_blank" rel="noopener">카카오맵</a></div></article>'}).join(''):'<p class="pick-empty">선택한 결제수단에 12,000원 이하로 가격이 확인된 음식점 메뉴가 없어요. 전체 사용처에서 다시 골라보세요.</p>';
+    document.getElementById('pickAgain').disabled=!picks.length;
+  }
+  document.getElementById('lunchLaunch').addEventListener('click',function(){previousPicks=[];pickLunch();lunchDialog.showModal();});
+  document.getElementById('pickClose').addEventListener('click',function(){lunchDialog.close();});
+  document.getElementById('pickAgain').addEventListener('click',pickLunch);
+  document.getElementById('pickResults').addEventListener('click',function(e){var button=e.target.closest('.pick-view');if(!button)return;var s=STORES[+button.dataset.store];lunchDialog.close();state.cat='음식점';state.q=s.name;qEl.value=s.name;render();highlight(s.id,true);var card=listEl.querySelector('.card[data-id="'+s.id+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'center'});});
 
   render();
 })();
