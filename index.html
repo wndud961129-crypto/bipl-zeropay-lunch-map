@@ -202,7 +202,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 .pick-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.pick-head h2{font-size:24px;margin:0;letter-spacing:-.03em}.pick-head p{color:var(--muted);font-size:13px;margin:7px 0 18px}.pick-close{background:var(--field);border:0;border-radius:50%;width:34px;height:34px;flex-shrink:0;cursor:pointer}
 .pick-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.pick-card{background:var(--p-food);padding:18px;border-radius:20px;display:flex;flex-direction:column;min-width:0}.pick-card:nth-child(2){background:var(--p-cafe)}.pick-card:nth-child(3){background:var(--p-all)}.pick-card h3{font-size:18px;margin:10px 0 5px;overflow-wrap:anywhere}.pick-price{font-size:22px;font-weight:700;margin:0 0 12px}.pick-store{font-size:13px;margin:0}.pick-distance{color:var(--muted);font-size:12px;margin:5px 0 14px}.pick-view{margin-top:auto;border:0;border-radius:999px;background:var(--surface);padding:10px;cursor:pointer;font-weight:600}.pick-links{display:flex;gap:12px;font-size:12px;margin:10px 0 0}.pick-note{color:var(--muted);font-size:12px;margin:16px 0}.pick-again{width:100%;padding:13px;border:0;border-radius:999px;background:var(--ink);color:var(--ink-text);font-weight:700;cursor:pointer}.pick-empty{grid-column:1/-1;color:var(--muted);padding:25px 0}
 @media(max-width:600px){.pick-results{grid-template-columns:1fr}.pick-head h2{font-size:21px}.lunch-dialog{padding:20px}.pick-card{padding:16px}.pick-card h3{margin-top:4px}.pick-price{margin-bottom:8px}.pick-distance{margin-bottom:10px}}
-</style>
+.pick-cafe{margin-top:16px;padding-top:14px;border-top:1px dashed var(--muted)}.cafe-label{font-size:12px;font-weight:700}.pick-cafe h4{font-size:15px;margin:7px 0}.pick-cafe h4 span{display:block;font-size:16px;margin-top:4px}.cafe-store{font-size:12px;margin:0 0 10px}.pick-cafe .pick-view{width:100%}.pick-total{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:16px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:13px}.pick-total b{font-size:20px}.cafe-unavailable{font-size:12px;color:var(--muted);margin:8px 0 0}</style>
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
@@ -231,7 +231,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
           </label>
         </div>
 
-        <button class="lunch-launch" id="lunchLaunch" type="button" aria-haspopup="dialog"><span>🎲 <b>점메추</b><small>12,000원 이하, 오늘 점심 골라줘!</small></span><span aria-hidden="true">↗</span></button>
+        <button class="lunch-launch" id="lunchLaunch" type="button" aria-haspopup="dialog"><span>🎲 <b>점메추</b><small>12,000원 안에서 식사·카페 골라줘!</small></span><span aria-hidden="true">↗</span></button>
         <div class="tiles" role="group" aria-label="카테고리">
           <button class="tab" data-cat="전체" aria-pressed="true"><span class="lbl">🗂️ 전체</span><span class="n num"></span><span class="arrow" aria-hidden="true">↗</span></button>
           <button class="tab" data-cat="음식점" aria-pressed="false"><span class="lbl">🍚 음식점</span><span class="n num"></span><span class="arrow" aria-hidden="true">↗</span></button>
@@ -295,7 +295,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 <dialog id="lunchDialog" class="lunch-dialog" aria-labelledby="lunchTitle">
   <div class="pick-head"><div><h2 id="lunchTitle">오늘 점심은 이거 어때요? 🎲</h2><p id="pickContext"></p></div><button id="pickClose" class="pick-close" type="button" aria-label="점메추 닫기">✕</button></div>
   <div id="pickResults" class="pick-results" aria-live="polite"></div>
-  <p class="pick-note">등록된 가격 기준 12,000원 이하 메뉴예요. 가격·주문 조건과 지원 식권 사용 가능 여부는 매장에서 확인해 주세요.</p>
+  <p class="pick-note">식사가 10,000원 이하면 음료를 더해 합계 12,000원 이내로 추천해요. 맞는 음료가 없거나 식사가 10,000원을 넘으면 식사만 추천해요. 가격·주문 조건과 지원 식권 사용 가능 여부는 매장에서 확인해 주세요.</p>
   <button id="pickAgain" class="pick-again" type="button">🎲 다시 추천</button>
 </dialog>
 <script src="lunch-picker.js"></script>
@@ -466,13 +466,16 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
     var picks=LunchPicker.recommend(STORES,{budget:12000,payment:state.payment,previous:previousPicks});
     previousPicks=picks.map(function(p){return p.key});
     document.getElementById('pickContext').textContent=(state.payment==='ticket'?'비플페이':state.payment==='zeropay'?'제로페이':'전체 사용처')+' · 반경 600m 음식점 · 서로 다른 가게 추천';
-    document.getElementById('pickResults').innerHTML=picks.length?picks.map(function(p,i){return '<article class="pick-card"><span>추천 '+(i+1)+'</span><h3>'+esc(p.menu)+'</h3><p class="pick-price num">'+p.price.toLocaleString('ko-KR')+'원</p><p class="pick-store">'+esc(p.store.name)+'</p><p class="pick-distance">'+p.store.dist+'m · 도보 약 '+walk(p.store.dist)+'분</p><button class="pick-view" type="button" data-store="'+p.store.id+'">가게 보기 ↗</button><div class="pick-links"><a href="'+naverUrl(p.store)+'" target="_blank" rel="noopener">네이버지도</a><a href="'+kakaoUrl(p.store)+'" target="_blank" rel="noopener">카카오맵</a></div></article>'}).join(''):'<p class="pick-empty">선택한 결제수단에 12,000원 이하로 가격이 확인된 음식점 메뉴가 없어요. 전체 사용처에서 다시 골라보세요.</p>';
+    document.getElementById('pickResults').innerHTML=picks.length?picks.map(function(p,i){
+      var cafe=p.cafe?'<div class="pick-cafe"><span class="cafe-label">☕ 함께 가면 좋은 카페</span><h4>'+esc(p.cafe.menu)+' <span class="num">'+p.cafe.price.toLocaleString('ko-KR')+'원</span></h4><p class="cafe-store">'+esc(p.cafe.store.name)+'</p><button class="pick-view" type="button" data-store="'+p.cafe.store.id+'">카페 보기 ↗</button><div class="pick-links"><a href="'+naverUrl(p.cafe.store)+'" target="_blank" rel="noopener">네이버지도</a><a href="'+kakaoUrl(p.cafe.store)+'" target="_blank" rel="noopener">카카오맵</a></div></div>':'';
+      return '<article class="pick-card"><span>추천 '+(i+1)+' · '+(p.cafe?'식사 + 카페':'식사만')+'</span><h3>'+esc(p.menu)+'</h3><p class="pick-price num">'+p.price.toLocaleString('ko-KR')+'원</p><p class="pick-store">'+esc(p.store.name)+'</p><p class="pick-distance">'+p.store.dist+'m · 도보 약 '+walk(p.store.dist)+'분</p><button class="pick-view" type="button" data-store="'+p.store.id+'">가게 보기 ↗</button><div class="pick-links"><a href="'+naverUrl(p.store)+'" target="_blank" rel="noopener">네이버지도</a><a href="'+kakaoUrl(p.store)+'" target="_blank" rel="noopener">카카오맵</a></div>'+cafe+'<p class="pick-total">'+(p.cafe?'식사 + 음료 합계':'식사 금액')+' <b class="num">'+p.total.toLocaleString('ko-KR')+'원</b></p>'+(p.price<=10000&&!p.cafe?'<p class="cafe-unavailable">남은 예산에 맞는 음료가 없어 식사만 추천했어요.</p>':'')+'</article>';
+    }).join(''):'<p class="pick-empty">선택한 결제수단에 12,000원 이하로 가격이 확인된 음식점 메뉴가 없어요. 전체 사용처에서 다시 골라보세요.</p>';
     document.getElementById('pickAgain').disabled=!picks.length;
   }
   document.getElementById('lunchLaunch').addEventListener('click',function(){previousPicks=[];pickLunch();lunchDialog.showModal();});
   document.getElementById('pickClose').addEventListener('click',function(){lunchDialog.close();});
   document.getElementById('pickAgain').addEventListener('click',pickLunch);
-  document.getElementById('pickResults').addEventListener('click',function(e){var button=e.target.closest('.pick-view');if(!button)return;var s=STORES[+button.dataset.store];lunchDialog.close();state.cat='음식점';state.q=s.name;qEl.value=s.name;render();highlight(s.id,true);var card=listEl.querySelector('.card[data-id="'+s.id+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'center'});});
+  document.getElementById('pickResults').addEventListener('click',function(e){var button=e.target.closest('.pick-view');if(!button)return;var s=STORES[+button.dataset.store];lunchDialog.close();state.cat=s.cat;state.q=s.name;qEl.value=s.name;render();highlight(s.id,true);var card=listEl.querySelector('.card[data-id="'+s.id+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'center'});});
 
   render();
 })();
