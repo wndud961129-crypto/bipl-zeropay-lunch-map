@@ -202,7 +202,10 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 .pick-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.pick-head h2{font-size:24px;margin:0;letter-spacing:-.03em}.pick-head p{color:var(--muted);font-size:13px;margin:7px 0 18px}.pick-close{background:var(--field);border:0;border-radius:50%;width:34px;height:34px;flex-shrink:0;cursor:pointer}
 .pick-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.pick-card{background:var(--p-food);padding:18px;border-radius:20px;display:flex;flex-direction:column;min-width:0}.pick-card:nth-child(2){background:var(--p-cafe)}.pick-card:nth-child(3){background:var(--p-all)}.pick-card h3{font-size:18px;margin:10px 0 5px;overflow-wrap:anywhere}.pick-price{font-size:22px;font-weight:700;margin:0 0 12px}.pick-store{font-size:13px;margin:0}.pick-distance{color:var(--muted);font-size:12px;margin:5px 0 14px}.pick-view{margin-top:auto;border:0;border-radius:999px;background:var(--surface);padding:10px;cursor:pointer;font-weight:600}.pick-links{display:flex;gap:12px;font-size:12px;margin:10px 0 0}.pick-note{color:var(--muted);font-size:12px;margin:16px 0}.pick-again{width:100%;padding:13px;border:0;border-radius:999px;background:var(--ink);color:var(--ink-text);font-weight:700;cursor:pointer}.pick-empty{grid-column:1/-1;color:var(--muted);padding:25px 0}
 @media(max-width:600px){.pick-results{grid-template-columns:1fr}.pick-head h2{font-size:21px}.lunch-dialog{padding:20px}.pick-card{padding:16px}.pick-card h3{margin-top:4px}.pick-price{margin-bottom:8px}.pick-distance{margin-bottom:10px}}
-.pick-cafe{margin-top:16px;padding-top:14px;border-top:1px dashed var(--muted)}.cafe-label{font-size:12px;font-weight:700}.pick-cafe h4{font-size:15px;margin:7px 0}.pick-cafe h4 span{display:block;font-size:16px;margin-top:4px}.cafe-store{font-size:12px;margin:0 0 10px}.pick-cafe .pick-view{width:100%}.pick-total{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:16px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:13px}.pick-total b{font-size:20px}.cafe-unavailable{font-size:12px;color:var(--muted);margin:8px 0 0}.pick-route{font-size:13px;margin:8px 0 0}.pick-route small{color:var(--muted);font-size:11px}.pick-hot{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;background:#121212;color:#fff;border-radius:999px;padding:3px 9px;align-self:flex-start}.pick-pop{font-size:12px;margin:6px 0 0}.pick-pop small{color:var(--muted);font-size:11px}</style>
+.pick-cafe{margin-top:16px;padding-top:14px;border-top:1px dashed var(--muted)}.cafe-label{font-size:12px;font-weight:700}.pick-cafe h4{font-size:15px;margin:7px 0}.pick-cafe h4 span{display:block;font-size:16px;margin-top:4px}.cafe-store{font-size:12px;margin:0 0 10px}.pick-cafe .pick-view{width:100%}.pick-total{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:16px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:13px}.pick-total b{font-size:20px}.cafe-unavailable{font-size:12px;color:var(--muted);margin:8px 0 0}.pick-route{font-size:13px;margin:8px 0 0}.pick-route small{color:var(--muted);font-size:11px}.pick-hot{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;background:#121212;color:#fff;border-radius:999px;padding:3px 9px;align-self:flex-start}.pick-pop{font-size:12px;margin:6px 0 0}.pick-pop small{color:var(--muted);font-size:11px}
+.badge.dlv{background:#fa0050;color:#fff}.dlv-info{margin-top:10px;font-size:12px;background:rgba(255,255,255,.55);border-radius:14px;padding:8px 11px}.dlv-info small{color:var(--muted);font-size:11px}.dlv-info a{text-underline-offset:3px}
+.dlv-guide{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:10px 14px;font-size:12.5px}.dlv-guide summary{cursor:pointer;font-weight:700;font-size:13px}.dlv-guide ol{margin:8px 0 0;padding-left:18px}.dlv-guide li{margin:3px 0}.dlv-guide p{color:var(--muted);margin:8px 0 2px}
+:root[data-theme="dark"] .dlv-info{background:rgba(0,0,0,.25)}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dlv-info{background:rgba(0,0,0,.25)}}</style>
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
@@ -248,7 +251,19 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
         <p class="payment-note" id="supportNotice">지원 식권의 실제 사용 여부는 운영기관의 업종·매장·시간 설정에 따라 달라요. 이 지도의 지원금 사용 조건은 아직 미확인입니다.</p>
         <div class="opts">
           <label class="toggle"><input type="checkbox" id="onlyMenu"><span class="tick">✓</span>대표메뉴 있는 곳만</label>
+          <label class="toggle"><input type="checkbox" id="onlyDelivery"><span class="tick">✓</span>🛵 요기요 배달 가능</label>
         </div>
+        <details class="dlv-guide">
+          <summary>🛵 비플식권으로 요기요 배달·포장 주문하는 법</summary>
+          <ol>
+            <li><b>비플페이 앱</b> 하단 <b>더보기 → 요기요</b>로 들어가요. 매뉴얼은 식권 결제를 이 경로로 안내해요.</li>
+            <li>배달 주소를 아카데미로 맞추고 가게·메뉴를 골라요. 포장은 오른쪽 위 <b>포장</b> 탭에서 주문해요.</li>
+            <li>결제 화면 <b>포인트 사용</b>에서 식권을 고르고 혼자결제 또는 함께결제를 선택한 뒤 금액을 넣어요.</li>
+            <li>식권이 모자라면 남은 금액은 <b>비플머니</b>로 복합결제돼요(비플머니는 1만원 단위 자동 충전).</li>
+            <li>주문 취소는 가게가 접수하기 전까지 앱에서, 접수 뒤에는 요기요 고객센터로만 가능해요.</li>
+          </ol>
+          <p>요기요 주문에 식권이 안 보이면 식권 관리자가 <b>'배달결제'</b>를 켜야 해요. 식권 이용시간·업종·지정 가맹점 제한도 똑같이 적용돼요. (출처: 비플식권 사용자 매뉴얼)</p>
+        </details>
       </section>
 
       <section class="lst">
@@ -268,6 +283,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
             <li>제로페이 표시는 공식 목록의 상호·도로명주소를 대조했다는 뜻이에요. '주소 보완 필요' 5곳은 공식 자료에 건물번호가 없어요. 비플페이 표시는 원본의 비플식권 목록 수록 근거이며, 실제 지원금 승인 여부를 뜻하지 않아요. <a href="https://mealzeropay.gitbook.io/guide/admin/2./3.-1" target="_blank" rel="noopener">운영기관의 업종·매장 설정</a>을 확인해 주세요.</li>
             <li>대표메뉴와 가격은 네이버 지도의 매장 메뉴 페이지를 기준으로 정리했어요(2026-11-18). 네이버에 쓸 만한 메뉴가 없는 2곳만 다른 출처를 썼어요. 가격은 가게 사정에 따라 바뀔 수 있어요.</li>
             <li>원본 목록에서 술집·유흥주점·저녁 장사 포장마차처럼 점심 식사와 맞지 않는 10곳, 저녁에만 여는 고깃집 2곳, 지도 앱에서 확인되지 않는 1곳은 뺐어요. 이마트 상무점은 위치를 확인하지 못해 뺐어요.</li>
+            <li>🛵 요기요 배달 표시는 요기요 웹에 아카데미 주소(상무중앙로 44)를 넣었을 때 배달 가능 목록에 나온 가게예요(2026-11-18 조회). 최소주문금액·배달팁·예상시간도 그때 기준이고, 표시가 없는 가게도 영업시간에 따라 배달될 수 있어요. 주문 전에 비플페이 앱의 요기요에서 꼭 확인해 주세요.</li>
             <li>⭐ 평점·후기 수와 점메추의 '카카오 추천 메뉴'는 카카오맵 매장 페이지(평점, 대표·AI 추천·사장님 추천 표시)를 2026-11-18에 확인한 값이에요. 실시간으로 바뀌지 않아요.</li>
             <li>원본 앱을 복사한 별도 버전입니다. 지도 © OpenStreetMap contributors · 카카오맵을 설정한 경우 © Kakao.</li>
           </ul>
@@ -301,9 +317,10 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 </dialog>
 <script src="lunch-picker.js?v=20261118-pop1"></script>
 <script src="popularity.js?v=20261118-pop1"></script>
+<script src="delivery.js?v=20261118-dlv1"></script>
 <script src="vendor/leaflet.js"></script>
 <script src="data.js"></script>
-<script src="filter.js"></script>
+<script src="filter.js?v=20261118-dlv1"></script>
 <script>
 (function(){
   var META = window.META, STORES = window.STORES.slice().sort(function(a,b){return a.dist-b.dist});
@@ -320,7 +337,9 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   document.getElementById("checked").textContent = META.zeroChecked || META.checked;
 
   var POP = window.POPULARITY || {};
-  STORES.forEach(function(s, i){ s.id = i; s.pop = (s.kakaoId && POP[s.kakaoId]) || null; });
+  var DLV = window.DELIVERY || {};
+  STORES.forEach(function(s, i){ s.id = i; s.pop = (s.kakaoId && POP[s.kakaoId]) || null; s.delivery = DLV[s.name] || null; });
+  function won(n){ return Number(n).toLocaleString("ko-KR") + "원"; }
 
   // 지도 (카카오맵 Web SDK). 지도를 못 불러와도 목록은 그대로 동작한다
   var map = null, markers = {}, popup = null, visible = {}, fallbackMap = null, fallbackMarkers = {};
@@ -395,7 +414,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   })();
 
   // 상태
-  var state = {cat:"전체", q:"", onlyMenu:false, payment:"all"};
+  var state = {cat:"전체", q:"", onlyMenu:false, payment:"all", delivery:false};
   var paymentTabs=Array.prototype.slice.call(document.querySelectorAll(".payment-tab"));
   var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
   var listEl = document.getElementById("list"), countEl = document.getElementById("countN"), qEl = document.getElementById("q");
@@ -421,6 +440,8 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
       if(s.paymentAudit && s.paymentAudit.status==='official_name_road_match') badges += '<span class="badge warn">제로페이 주소 보완 필요</span>';
       if(s.approx) badges += '<span class="badge warn">위치 근사</span>';
       if(s.pop && Number.isFinite(s.pop.rating)) badges += '<span class="badge">⭐ '+s.pop.rating.toFixed(1)+(Number.isFinite(s.pop.reviews)?' · 후기 '+s.pop.reviews:'')+'</span>';
+      if(s.delivery) badges += '<span class="badge dlv">🛵 요기요 배달</span>' + (s.delivery.pickup ? '<span class="badge">🥡 포장</span>' : '');
+      var dlv = s.delivery ? '<div class="dlv-info">🛵 최소주문 <b>'+won(s.delivery.min)+'</b> · 배달팁 '+won(s.delivery.fee)+'~ · '+esc(s.delivery.eta)+(s.delivery.pickup?' · 포장 가능'+(s.delivery.pickupMin?'(약 '+s.delivery.pickupMin+'분)':''):'')+'<br><small>식권 결제는 비플페이 앱 › 더보기 › 요기요에서 · <a href="https://www.yogiyo.co.kr/mobile/#/'+s.delivery.id+'/" target="_blank" rel="noopener">요기요에서 메뉴 보기 ↗</a></small></div>' : '';
       var menu = "";
       if(s.cat !== "편의점·마트"){
         if(s.menu && s.menu.length){
@@ -436,6 +457,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
         + '<div class="meta">'+esc(s.addr)+'</div>'
         + '<div class="badges">'+badges+'</div>'
         + (s.zeroEvidence?'<div class="evidence"><a href="https://www.zeropay.or.kr/UI_HP_009_03.act" target="_blank" rel="noopener">제로페이 공식목록</a> · '+esc(s.zeroEvidence.checked)+(s.zeroEvidence.recentTransaction?' · 최근 결제 표시 있음':'')+'</div>':'')
+        + dlv
         + menu
         + '<div class="links"><a class="btn naver" href="'+naverUrl(s)+'" target="_blank" rel="noopener"><span class="mk">N</span>네이버지도<span class="go">↗</span></a><a class="btn kakao" href="'+kakaoUrl(s)+'" target="_blank" rel="noopener"><span class="mk">K</span>카카오맵<span class="go">↗</span></a></div>'
         + '</article>';
@@ -454,6 +476,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   qEl.addEventListener("input", function(){ state.q = qEl.value.trim(); render(); });
   document.getElementById("clear").addEventListener("click", function(e){ e.preventDefault(); qEl.value = ""; state.q = ""; render(); });
   document.getElementById("onlyMenu").addEventListener("change", function(e){ state.onlyMenu = e.target.checked; render(); });
+  document.getElementById("onlyDelivery").addEventListener("change", function(e){ state.delivery = e.target.checked; render(); });
   paymentTabs.forEach(function(t){ t.addEventListener("click",function(){state.payment=t.dataset.payment;render();}); });
   listEl.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.matches(".card")){e.preventDefault();e.target.click();}});
   listEl.addEventListener("click", function(e){

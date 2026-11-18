@@ -9,6 +9,7 @@
     if(state.payment==='zeropay' && !payment.zeropay) return false;
     if(state.payment==='ticket' && !payment.ticket) return false;
     if(state.onlyMenu && !(store.menu && store.menu.length)) return false;
+    if(state.delivery && !store.delivery) return false;
     if(state.q){
       var q=state.q.replace(/\s/g,'').toLowerCase();
       var hay=(store.name+' '+(store.menu||[]).join(' ')+' '+store.cat).replace(/\s/g,'').toLowerCase();
