@@ -84,7 +84,12 @@ h2.sec{font-size:22px;margin:0;letter-spacing:-.02em;font-weight:700}
 h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
 
 /* 검색 */
-.search{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:999px;padding:6px 6px 6px 18px;min-width:0;flex:1 1 260px;max-width:360px;border:1px solid var(--line)}
+.search-wrap{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 260px;max-width:360px}
+.help-row{display:flex;justify-content:flex-end}
+.help-btn{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer}
+.help-dialog{max-width:620px}.help-body section{background:var(--panel);border-radius:18px;padding:12px 16px;margin-bottom:10px}.help-body h3{font-size:15px;margin:0 0 6px}.help-body ul{margin:0;padding-left:18px;font-size:13px}.help-body li{margin:4px 0}.help-dialog .pick-again{margin-top:6px}
+.help-btn:hover{background:var(--ink);color:var(--ink-text)}.help-btn:focus-visible{outline:3px solid var(--c-food);outline-offset:2px}
+.search{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:999px;padding:6px 6px 6px 18px;min-width:0;border:1px solid var(--line)}
 .search svg{flex:0 0 auto;color:var(--muted)}
 .search input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:15px;color:var(--text);padding:6px 0}
 .search input::placeholder{color:#a3a39e}
@@ -179,7 +184,7 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   .place .txt{display:none}
   .body{padding:22px 16px;border-radius:24px 24px 0 0}
   h1{font-size:27px}
-  .search{max-width:none;flex-basis:100%}
+  .search-wrap{max-width:none;flex-basis:100%}
   .tab{min-height:96px}
   .tab .n{font-size:26px}
   .blob{display:none}
@@ -227,11 +232,16 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
             <h1>오늘 점심 뭐 먹지? 🍚</h1>
             <p class="sub">아카데미 반경 600m · 비플식권과 제로페이 가맹점</p>
           </div>
-          <label class="search">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input id="q" type="search" placeholder="메뉴·가게 검색 (예: 국수, 버거)" autocomplete="off" aria-label="메뉴·가게 검색">
-            <button id="clear" type="button">지우기</button>
-          </label>
+          <div class="search-wrap">
+            <div class="help-row">
+              <button class="help-btn" id="helpOpen" type="button" aria-haspopup="dialog"><span aria-hidden="true">ℹ️</span> 소개·사용법</button>
+            </div>
+            <label class="search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input id="q" type="search" placeholder="메뉴·가게 검색 (예: 국수, 버거)" autocomplete="off" aria-label="메뉴·가게 검색">
+              <button id="clear" type="button">지우기</button>
+            </label>
+          </div>
         </div>
 
         <button class="lunch-launch" id="lunchLaunch" type="button" aria-haspopup="dialog"><span>🎲 <b>점메추</b><small>식사 8,000원부터 · 합계 11,000~12,000원 · 카카오맵 인기 메뉴 우선</small></span><span aria-hidden="true">↗</span></button>
@@ -309,6 +319,45 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   // 카카오맵 JavaScript 키 (페이지에 공개되는 키. 카카오 디벨로퍼스에 등록한 도메인에서만 동작)
   window.KAKAO_JS_KEY = "여기에_내_JavaScript_키";
 </script>
+<dialog id="helpDialog" class="lunch-dialog help-dialog" aria-labelledby="helpTitle">
+  <div class="pick-head"><div><h2 id="helpTitle">비플·제로페이 점심지도 ℹ️</h2><p>L.L.M Academy(광주 서구 상무중앙로 44) 반경 600m 안에서 비플식권·제로페이로 점심 먹을 곳을 찾는 지도예요.</p></div><button id="helpClose" class="pick-close" type="button" aria-label="소개·사용법 닫기">✕</button></div>
+  <div class="help-body">
+    <section>
+      <h3>🗂️ 가게 찾기</h3>
+      <ul>
+        <li><b>카테고리 타일</b>(전체·음식점·카페·편의점·마트)을 누르면 그 종류만 보여요.</li>
+        <li><b>결제수단 탭</b>: 제로페이 공식 가맹점 / 비플페이(비플식권 목록 수록)로 걸러요.</li>
+        <li><b>검색</b>창에 메뉴나 가게 이름을 넣어요. 카드의 메뉴 칩을 눌러도 그 메뉴로 검색돼요.</li>
+        <li><b>대표메뉴 있는 곳만</b>, <b>🛵 요기요 배달 가능</b> 토글로 더 좁힐 수 있어요.</li>
+        <li>목록은 <b>가까운 순</b>이에요. 카드를 누르면 지도에서 위치를 보여 주고, 네이버지도·카카오맵 버튼으로 바로 열 수 있어요.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>🎲 점메추</h3>
+      <ul>
+        <li>식사 8,000원 이상, 식사(＋카페 음료) 합계 <b>11,000~12,000원</b>인 조합만 추천해요.</li>
+        <li><b>카카오맵 평점</b>과 <b>카카오 추천 메뉴(🔥)</b>가 높은 곳부터, 그다음 12,000원에 가까운 금액, 짧은 <b>왕복 동선</b> 순이에요.</li>
+        <li><b>다시 추천</b>을 누르면 아직 안 본 가게를 이어서 3곳씩 보여 줘요.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>🛵 요기요 배달·포장</h3>
+      <ul>
+        <li>🛵 배지는 요기요에서 아카데미 주소로 배달되는 가게예요. 최소주문금액·배달팁·예상시간도 함께 보여요.</li>
+        <li>식권 결제는 <b>비플페이 앱 › 더보기 › 요기요</b>에서 주문해요. 자세한 순서는 필터 아래 안내를 펼쳐 보세요.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>⚠️ 꼭 알아두기</h3>
+      <ul>
+        <li>가격·평점·배달 정보는 <b>2026-11-18 기준</b>이라 실제와 다를 수 있어요.</li>
+        <li>지원 식권의 실제 사용 여부는 운영기관의 업종·매장·시간 설정에 따라 달라요. 결제 전에 매장과 앱에서 확인해 주세요.</li>
+        <li>거리는 직선거리예요. 실제 걷는 길은 더 길 수 있어요.</li>
+      </ul>
+    </section>
+  </div>
+  <button id="helpOk" class="pick-again" type="button">알겠어요 👍</button>
+</dialog>
 <dialog id="lunchDialog" class="lunch-dialog" aria-labelledby="lunchTitle">
   <div class="pick-head"><div><h2 id="lunchTitle">오늘 점심은 이거 어때요? 🎲</h2><p id="pickContext"></p></div><button id="pickClose" class="pick-close" type="button" aria-label="점메추 닫기">✕</button></div>
   <div id="pickResults" class="pick-results" aria-live="polite"></div>
@@ -507,6 +556,11 @@ h2.sec .dim{color:#a9a9a4;font-weight:600;margin-left:4px}
   }
   document.getElementById('lunchLaunch').addEventListener('click',function(){previousPicks=[];pickLunch();lunchDialog.showModal();});
   document.getElementById('pickClose').addEventListener('click',function(){lunchDialog.close();});
+  var helpDialog=document.getElementById('helpDialog');
+  document.getElementById('helpOpen').addEventListener('click',function(){helpDialog.showModal();});
+  document.getElementById('helpClose').addEventListener('click',function(){helpDialog.close();});
+  document.getElementById('helpOk').addEventListener('click',function(){helpDialog.close();});
+  helpDialog.addEventListener('click',function(e){if(e.target===helpDialog)helpDialog.close();});
   document.getElementById('pickAgain').addEventListener('click',pickLunch);
   document.getElementById('pickResults').addEventListener('click',function(e){var button=e.target.closest('.pick-view');if(!button)return;var s=STORES[+button.dataset.store];lunchDialog.close();state.cat=s.cat;state.q=s.name;qEl.value=s.name;render();highlight(s.id,true);var card=listEl.querySelector('.card[data-id="'+s.id+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'center'});});
 
