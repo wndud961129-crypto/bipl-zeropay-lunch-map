@@ -47,25 +47,43 @@
     var p=store&&store.pop;if(!p||!Number.isFinite(p.rating))return PRIOR_RATING;
     var v=Number.isFinite(p.reviews)?p.reviews:0;return (v*p.rating+PRIOR_WEIGHT*PRIOR_RATING)/(v+PRIOR_WEIGHT);
   }
-  // 음식점 안에서 고르는 순서: 인기 메뉴 → 12,000원에 가까운 합계 → 짧은 왕복 동선
-  function better(a,b){
-    if(a.popular!==b.popular)return a.popular?-1:1;
-    if(a.total!==b.total)return b.total-a.total;
-    return a.route-b.route;
+  // 가중치 무작위 뽑기(중복 없이 k개): 가중치가 클수록 잘 뽑히지만, 0보다 크면 누구나 뽑힐 수 있다
+  function weightedSample(list,weight,k,random){
+    var pool=list.slice(),out=[];
+    while(pool.length&&out.length<k){
+      var ws=pool.map(weight),sum=0,i;ws.forEach(function(w){sum+=w;});
+      var r=random()*sum;for(i=0;i<ws.length;i++){r-=ws[i];if(r<0)break;}if(i>=ws.length)i=ws.length-1;
+      out.push(pool.splice(i,1)[0]);
+    }
+    return out;
   }
-  // 음식점 사이 순서: 인기 점수(보정 평점 + 인기 메뉴 가산) → 합계 → 동선. 같은 점수면 무작위
+  // 가게 점수 차이를 뽑힐 확률로 바꾸는 온도: 점수가 0.35 낮으면 약 1/2.7배로 덜 뽑힌다
+  var STORE_TEMPERATURE=0.35,POPULAR_MENU_WEIGHT=3;
+  function storeWeight(top){return function(g){return Math.exp((g.score-top)/STORE_TEMPERATURE);};}
+  // 메뉴 가중치: 카카오 추천 메뉴는 3배, 그리고 합계가 12,000원에 가까울수록 최대 2배
+  function menuWeight(c,minTotal,budget){var span=Math.max(1,budget-minTotal);return (c.popular?POPULAR_MENU_WEIGHT:1)*(1+(c.total-minTotal)/span);}
+  // 같은 식사 메뉴에 붙일 카페는 합계가 12,000원에 가까운 것 → 왕복 동선이 짧은 것
+  function betterPairing(a,b){return (b.total-a.total)||(a.route-b.route);}
+  // 점메추: 가게마다 식사 메뉴별 최적 조합을 만든 뒤, 가게는 점수 가중 무작위로, 메뉴는 메뉴 가중 무작위로 고른다
   function plan(stores,options,random){
     options=options||{};random=random||Math.random;
-    var candidates=getCandidates(stores,options),previous=options.previous||[],index=Object.create(null),groups=[],choices=[];
+    var budget=options.budget||12000,minTotal=options.minTotal||11000;
+    var candidates=getCandidates(stores,options),previous=options.previous||[],index=Object.create(null),groups=[];
     candidates.forEach(function(c){
-      var g=index[c.key];if(!g){g={key:c.key,top:c,items:[]};index[c.key]=g;groups.push(g);}
-      var d=better(c,g.top);if(d<0){g.top=c;g.items=[];}
-      if(better(c,g.top)===0)g.items.push(c);
+      var g=index[c.key];if(!g){g={key:c.key,store:c.store,meals:Object.create(null),list:[]};index[c.key]=g;groups.push(g);}
+      var m=g.meals[c.menu];
+      if(!m){g.meals[c.menu]=c;g.list.push(c);}
+      else if(betterPairing(c,m)<0){g.list[g.list.indexOf(m)]=c;g.meals[c.menu]=c;}
     });
-    groups.forEach(function(g){g.rating=storeRating(g.top.store);g.score=g.rating+(g.top.popular?POPULAR_MENU_BONUS:0);g.tie=random();});
-    groups.sort(function(a,b){return (b.score-a.score)||(b.top.total-a.top.total)||(a.top.route-b.top.route)||(a.tie-b.tie);});
+    groups.forEach(function(g){g.rating=storeRating(g.store);g.hasPopular=g.list.some(function(c){return c.popular;});g.score=g.rating+(g.hasPopular?POPULAR_MENU_BONUS:0);});
+    var top=Math.max.apply(null,groups.map(function(g){return g.score;}).concat([0]));
     var fresh=groups.filter(function(g){return previous.indexOf(g.key)<0}),seen=groups.filter(function(g){return previous.indexOf(g.key)>=0});
-    fresh.concat(seen).slice(0,3).forEach(function(g){var c=g.items[Math.floor(random()*g.items.length)];c.rating=g.rating;c.score=g.score;choices.push(c);});
+    var picked=weightedSample(fresh,storeWeight(top),3,random);
+    if(picked.length<3)picked=picked.concat(weightedSample(seen,storeWeight(top),3-picked.length,random));
+    var choices=picked.map(function(g){
+      var c=weightedSample(g.list,function(x){return menuWeight(x,minTotal,budget);},1,random)[0];
+      c.rating=g.rating;c.score=g.score;c.menuCount=g.list.length;return c;
+    });
     return {choices:choices,candidateCount:candidates.length,restaurantCount:groups.length};
   }
   function recommend(stores,options,random){return plan(stores,options,random).choices;}
@@ -94,7 +112,13 @@
     });
     return out;
   }
-  function betterOrder(a,b){return (b.rep-a.rep)||(b.total-a.total)||(b.reviews-a.reviews);}
+  // 요기요 메뉴 가중치: 대표메뉴(🔥)는 3배, 메뉴 리뷰가 많을수록 조금 더, 예산 안이면 12,000원에 가까울수록, 예산을 넘으면 덜 넘을수록 잘 뽑힌다
+  function yogiyoOrderWeight(o,floor,budget){
+    var w=(o.rep?POPULAR_MENU_WEIGHT:1)*(1+Math.log(1+(o.reviews||0))/3);
+    if(o.total<=budget)w*=1+(o.total-floor)/Math.max(1,budget-floor);
+    else w*=1/(1+(o.total-budget)/2000);
+    return w;
+  }
   function planYogiyo(stores,options,random){
     options=options||{};random=random||Math.random;
     var mode=options.mode||'delivery',payment=options.payment||'all',previous=options.previous||[],
@@ -105,20 +129,25 @@
       if(payment==='zeropay'&&!(s.payments||{}).zeropay)return;
       if(payment==='ticket'&&!(s.payments||{}).ticket)return;
       eligible++;
-      var orders=yogiyoOrders(s,mode),rating=yogiyoRating(s.ymenu);
-      var fit=orders.filter(function(o){return o.total>=floor&&o.total<=budget;}).sort(betterOrder);
-      if(fit.length){var o=fit[0];groups.push({key:s.name+'|'+s.addr,store:s,order:o,rating:rating,score:rating+(o.rep?0.3:0),tie:random()});return;}
-      // 예산 안에 드는 주문이 없는 가게: 대표메뉴 → 가장 싼(12,000원에 가장 가까운) 단품 주문을 따로 모아 둔다
-      var above=orders.filter(function(o){return o.total>budget;}).sort(function(a,b){return (b.rep-a.rep)||(a.total-b.total);})[0];
-      if(above)over.push({key:s.name+'|'+s.addr,store:s,order:above,rating:rating,score:rating+(above.rep?0.3:0),tie:random()});
+      var orders=yogiyoOrders(s,mode),rating=yogiyoRating(s.ymenu),key=s.name+'|'+s.addr;
+      var fit=orders.filter(function(o){return o.total>=floor&&o.total<=budget;});
+      if(fit.length){groups.push({key:key,store:s,orders:fit,rating:rating,score:rating+(fit.some(function(o){return o.rep;})?0.3:0)});return;}
+      // 예산 안에 드는 주문이 없는 가게는 12,000원을 넘는 단품 주문들을 따로 모아 둔다
+      var above=orders.filter(function(o){return o.total>budget;});
+      if(above.length)over.push({key:key,store:s,orders:above,rating:rating,score:rating+(above.some(function(o){return o.rep;})?0.3:0)});
     });
-    // 배달은 최소주문금액 때문에 12,000원 안에 드는 가게가 하나도 없으면, 12,000원을 넘는 주문으로 같은 순서(평점→대표메뉴→금액)로 추천한다
+    // 배달은 최소주문금액 때문에 12,000원 안에 드는 가게가 하나도 없으면, 12,000원을 넘는 주문으로 추천한다(덜 넘는 메뉴가 더 잘 뽑힘)
     var overMode=!groups.length&&mode==='delivery'&&over.length>0;
     if(overMode)groups=over;
-    groups.sort(function(a,b){return (b.score-a.score)||(overMode?(a.order.total-b.order.total):(b.order.total-a.order.total))||(a.tie-b.tie);});
+    var top=Math.max.apply(null,groups.map(function(g){return g.score;}).concat([0]));
     var fresh=groups.filter(function(g){return previous.indexOf(g.key)<0}),seen=groups.filter(function(g){return previous.indexOf(g.key)>=0});
-    function card(g){var o=g.order;return {key:g.key,store:g.store,menu:o.menu,price:o.price,rep:o.rep,fee:o.fee,total:o.total,over:Math.max(0,o.total-budget),mode:mode,rating:g.rating};}
-    return {choices:fresh.concat(seen).slice(0,3).map(card),overMode:overMode,storeCount:groups.length,eligibleCount:eligible};
+    var picked=weightedSample(fresh,storeWeight(top),3,random);
+    if(picked.length<3)picked=picked.concat(weightedSample(seen,storeWeight(top),3-picked.length,random));
+    function card(g){
+      var o=weightedSample(g.orders,function(x){return yogiyoOrderWeight(x,floor,budget);},1,random)[0];
+      return {key:g.key,store:g.store,menu:o.menu,price:o.price,rep:o.rep,fee:o.fee,total:o.total,over:Math.max(0,o.total-budget),mode:mode,rating:g.rating,menuCount:g.orders.length};
+    }
+    return {choices:picked.map(card),overMode:overMode,storeCount:groups.length,eligibleCount:eligible};
   }
   return {recommend:recommend,getCandidates:getCandidates,plan:plan,routeLength:routeLength,storeRating:storeRating,planYogiyo:planYogiyo,deliveryFee:deliveryFee};
 });
